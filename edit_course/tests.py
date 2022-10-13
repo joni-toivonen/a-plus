@@ -1,4 +1,5 @@
 from datetime import datetime
+from json import dumps
 from django.test import override_settings
 from course.models import CourseInstance
 from exercise.models import BaseExercise
@@ -7,7 +8,7 @@ from lib.testdata import CourseTestCase
 
 class CourseCloneTest(CourseTestCase):
 
-    def test_course_clone(self):
+    def test_course_clone(self): # pylint:disable=too-many-locals
 
         instance = CourseInstance.objects.get(id=1)
         instance.add_assistant(self.user.userprofile)
@@ -72,7 +73,7 @@ class CourseCloneTest(CourseTestCase):
         old_modules = list(instance.course_modules.all())
         new_modules = list(new_instance_1.course_modules.all())
         self.assertEqual(len(old_modules), len(new_modules))
-        for i in range(len(old_modules)):
+        for i in range(len(old_modules)): # pylint: disable=consider-using-enumerate
             self.assertEqual(old_modules[i].url, new_modules[i].url)
             self.assertEqual(
                 self._as_names(old_modules[i].learning_objects.all()),
@@ -98,7 +99,7 @@ class CourseCloneTest(CourseTestCase):
 
         new_modules = list(new_instance_2.course_modules.all())
         self.assertEqual(len(old_modules), len(new_modules))
-        for i in range(len(old_modules)):
+        for i in range(len(old_modules)): # pylint: disable=consider-using-enumerate
             self.assertEqual(old_modules[i].url, new_modules[i].url)
             self.assertEqual(new_modules[i].learning_objects.count(), 0)
 
@@ -158,11 +159,10 @@ class BatchAssessTest(CourseTestCase):
         self.setUpCourse()
 
     def test_batch_assess(self):
-        from json import dumps
 
         instance = CourseInstance.objects.get(id=1)
         exercise = BaseExercise.objects.get(id=1)
-        url = instance.get_url('batch-assess')
+        url = instance.get_url('batch-assess') # noqa: F841
 
         json_to_post = dumps({
           'objects': [

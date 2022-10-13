@@ -5,6 +5,7 @@ from time import sleep
 
 from django.conf import settings
 
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'aplus.settings')
 
 app = celery.Celery('aplus')
@@ -21,7 +22,7 @@ def enroll():
     """
     Traverse the currently open courses that are linked to SIS and update enrollments.
     """
-    from course.models import CourseInstance
+    from course.models import CourseInstance # pylint: disable=import-outside-toplevel
     now = datetime.datetime.now(datetime.timezone.utc)
     courses = CourseInstance.objects.filter(
         ending_time__gt=now,

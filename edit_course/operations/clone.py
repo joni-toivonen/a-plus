@@ -2,13 +2,13 @@ import logging
 
 from exercise.exercise_models import BaseExercise, CourseChapter
 from django.db import transaction
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User # pylint: disable=imported-auth-user
 from course.models import CourseInstance
 from course.sis import get_sis_configuration, StudentInfoSystem
 
 logger = logging.getLogger("aplus.course")
 
-def clone_learning_objects(
+def clone_learning_objects( # pylint: disable=too-many-arguments
         category_map,
         module,
         objects,
@@ -53,7 +53,7 @@ def clone_learning_objects(
         )
 
 
-def set_sis(instance: CourseInstance, id: str) -> None:
+def set_sis(instance: CourseInstance, id: str) -> None: # pylint: disable=redefined-builtin
     """
     Set teachers, starting time and ending based on Student Information System.
 
@@ -71,8 +71,8 @@ def set_sis(instance: CourseInstance, id: str) -> None:
         return
     try:
         coursedata = sis.get_course_data(id)
-    except Exception as e:
-        logger.exception(f"Error getting course data from SIS.")
+    except Exception as e: # noqa: F841
+        logger.exception(f"Error getting course data from SIS.") # noqa: F541
         return
 
     if coursedata.get('starting_time') and coursedata.get('ending_time'):
@@ -95,7 +95,7 @@ def set_sis(instance: CourseInstance, id: str) -> None:
             instance.add_teacher(user.userprofile)
 
 @transaction.atomic
-def clone(
+def clone( # pylint: disable=too-many-arguments too-many-locals
         instance,
         url,
         clone_teachers,

@@ -2,7 +2,6 @@ import logging
 import traceback
 from django.conf import settings
 from django.core.mail import send_mail
-from django.urls import reverse
 from .helpers import build_aplus_url
 
 
@@ -25,7 +24,7 @@ def email_course_instance(instance, subject, message, everyone=False) -> bool:
 
     try:
         return send_mail(subject, message, settings.SERVER_EMAIL, recipients, True) == 1
-    except:
+    except: # noqa: E722
         logger.exception('Failed to send course instance emails.')
         raise
 
@@ -59,5 +58,5 @@ def email_course_error(request, exercise, message, exception=True):
 
     try:
         email_course_instance(instance, subject, body)
-    except:
+    except: # noqa: E722
         pass

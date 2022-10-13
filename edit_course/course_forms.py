@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django_colortag.forms import ColorTagForm
 
 from aplus.api import api_reverse
-from course.models import LearningObjectCategory, Course, CourseModule, CourseInstance, UserTag
+from course.models import LearningObjectCategory, CourseModule, CourseInstance, UserTag
 from lib.validators import generate_url_key_validator
 from lib.fields import UsersSearchSelectField
 from lib.widgets import DateTimeLocalInput
@@ -138,7 +138,7 @@ class CourseInstanceForm(forms.ModelForm):
             self.fields["url"].help_text = _('COURSE_URL_IDENTIFIER_LOCKED_WHILE_COURSE_VISIBLE')
             self.fields["lifesupport_time"].help_text = _('COURSE_REMOVES_MODEL_ANSWER_VISIBILITY_STUDENTS')
             self.fields["archive_time"].help_text = _('COURSE_REMOVES_SUBMISSION_POSSIBILITY_STUDENTS')
-        
+
         # If course is not connected to SIS system, disable the enroll checkbox
         if not self.instance.sis_id:
             self.fields['sis_enroll'].disabled = True
@@ -162,7 +162,7 @@ class CourseInstanceForm(forms.ModelForm):
         self.instance.set_assistants(self.cleaned_data['assistants'])
         self.instance.set_teachers(self.cleaned_data['teachers'])
 
-        return super(CourseInstanceForm, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
 
 class CourseIndexForm(forms.ModelForm):
@@ -237,7 +237,7 @@ class CloneInstanceForm(forms.Form):
         if not sis:
             # Student Info System not configured
             return
-        
+
         try:
             instances = sis.get_instances(self.instance.course.code)
 
@@ -248,7 +248,7 @@ class CloneInstanceForm(forms.Form):
                         choices=options,
                         label=_('LABEL_SIS_INSTANCE'),
                 )
-        except Exception as e:
+        except Exception:
             logger.exception("Error getting instances from SIS.")
 
     def __init__(self, *args, **kwargs):
@@ -309,7 +309,7 @@ class SelectUsersForm(forms.Form):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         course_instance = kwargs.pop('instance')
-        super(SelectUsersForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['user'].widget.search_api_url = api_reverse(
             "course-students-list", kwargs={'course_id': course_instance.id})
         self.fields['user'].queryset = course_instance.get_student_profiles()
